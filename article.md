@@ -27,17 +27,12 @@ Shifting involves moving data forward or backward in time. It is commonly used t
 Lagged features are essential for capturing temporal dependencies in time series data. They allow you to compare the value today against the value from a previous time step, which is particularly useful for creating lagged variables in machine learning models.
 
     # Example Time Series Data
-    np.random.seed(42)
-    data = pd.Series(np.random.randn(10),
-                     index=pd.date_range("2023-01-01", periods=10))
+np.random.seed(42) data = pd.Series(np.random.randn(10), index=pd.date_range("2023-01-01", periods=10))
 
     # Creating Lagged Features
-    data_lag1 = data.shift(1)  # Lag by 1 period
-    data_lag2 = data.shift(2)  # Lag by 2 periods
+data_lag1 = data.shift(1) # Lag by 1 period data_lag2 = data.shift(2) # Lag by 2 periods
 
-    print("Original Data:\n", data)
-    print("Lagged by 1 Period:\n", data_lag1)
-    print("Lagged by 2 Periods:\n", data_lag2)
+print("Original Data:\n", data) print("Lagged by 1 Period:\n", data_lag1) print("Lagged by 2 Periods:\n", data_lag2)
 
 ## Windowing (Rolling Statistics)
 
@@ -46,16 +41,14 @@ Windowing calculates statistics over a rolling window, such as moving averages o
 **Rolling Mean:**
 
     # Rolling Mean with Window Size of 3
-    rolling_mean = data.rolling(window=3).mean()
-    print("Rolling Mean (Window=3):\n", rolling_mean)
+rolling_mean = data.rolling(window=3).mean() print("Rolling Mean (Window=3):\n", rolling_mean)
 
 The rolling mean is the most common windowing technique, but rolling windows can also be used with other aggregations.
 
 **Rolling Standard Deviation:**
 
     # Rolling Standard Deviation (Volatility)
-    rolling_std = data.rolling(window=3).std()
-    print("Rolling Standard Deviation (Window=3):\n", rolling_std)
+rolling_std = data.rolling(window=3).std() print("Rolling Standard Deviation (Window=3):\n", rolling_std)
 
 Calculating rolling standard deviation is useful for analyzing volatility, especially in financial time series.
 
@@ -66,20 +59,15 @@ Resampling changes the frequency of time series data, either by aggregating data
 **Downsampling:**
 
     # Example Time Series Data (Hourly)
-    date_rng = pd.date_range(start='2023-01-01',
-                             end='2023-01-02', freq='H')
-    data_hourly = pd.Series(np.random.randn(len(date_rng)),
-                            index=date_rng)
+date_rng = pd.date_range(start='2023-01-01', end='2023-01-02', freq='H') data_hourly = pd.Series(np.random.randn(len(date_rng)), index=date_rng)
 
     # Downsample to Daily Mean
-    data_daily = data_hourly.resample('D').mean()
-    print("Daily Mean (Downsampled):\n", data_daily)
+data_daily = data_hourly.resample('D').mean() print("Daily Mean (Downsampled):\n", data_daily)
 
 **Upsampling:**
 
     # Upsample to 30-Minute Frequency and Interpolate
-    data_half_hourly = data_hourly.resample('30T').interpolate(method='linear')
-    print("Upsampled and Interpolated (30 Min Frequency):\n", data_half_hourly)
+data_half_hourly = data_hourly.resample('30T').interpolate(method='linear') print("Upsampled and Interpolated (30 Min Frequency):\n", data_half_hourly)
 
 ## Imputing Missing Values
 
@@ -88,25 +76,20 @@ Machine learning models are sensitive to missing values. Pandas provides several
 **Forward Fill (or Back Fill):**
 
     # Introducing NaN values
-    data_with_nans = data.copy()
-    data_with_nans.iloc[3] = np.nan
-    data_with_nans.iloc[7] = np.nan
+data_with_nans = data.copy() data_with_nans.iloc[3] = np.nan data_with_nans.iloc[7] = np.nan
 
     # Forward Fill
-    data_ffill = data_with_nans.ffill()
-    print("Forward Filled Data:\n", data_ffill)
+data_ffill = data_with_nans.ffill() print("Forward Filled Data:\n", data_ffill)
 
     # Backward Fill
-    data_bfill = data_with_nans.bfill()
-    print("Backward Filled Data:\n", data_bfill)
+data_bfill = data_with_nans.bfill() print("Backward Filled Data:\n", data_bfill)
 
 Forward fill is particularly useful when working with sensor data where the most recent observation is carried forward until a new reading is available.
 
 **Mean Imputation:**
 
     # Mean Imputation
-    data_mean_impute = data_with_nans.fillna(data_with_nans.mean())
-    print("Mean Imputation:\n", data_mean_impute)
+data_mean_impute = data_with_nans.fillna(data_with_nans.mean()) print("Mean Imputation:\n", data_mean_impute)
 
 Mean imputation is useful when gaps are short or when the data is relatively stable.
 
@@ -142,22 +125,18 @@ Time series values often vary in magnitude, and unscaled data can hinder the per
 
 **Python Example for Scaling:**
 
-    from sklearn.preprocessing import MinMaxScaler, StandardScaler
-    import numpy as np
+from sklearn.preprocessing import MinMaxScaler, StandardScaler import numpy as np
 
     # Example Time Series
-    y = np.array([10, 20, 30, 40, 50]).reshape(-1, 1)
+y = np.array([10, 20, 30, 40, 50]).reshape(-1, 1)
 
     # Min-Max Scaling
-    scaler = MinMaxScaler()
-    y_minmax = scaler.fit_transform(y)
+scaler = MinMaxScaler() y_minmax = scaler.fit_transform(y)
 
     # Standardization
-    scaler_std = StandardScaler()
-    y_std = scaler_std.fit_transform(y)
+scaler_std = StandardScaler() y_std = scaler_std.fit_transform(y)
 
-    print("Min-Max Scaled:", y_minmax.flatten())
-    print("Standardized:", y_std.flatten())
+print("Min-Max Scaled:", y_minmax.flatten()) print("Standardized:", y_std.flatten())
 
 **When to Use:**
 
@@ -172,11 +151,10 @@ Instead of analyzing absolute values, focusing on changes can remove trends and 
 **Python Example for Differencing:**
 
     # Example Time Series
-    y = pd.Series([10, 12, 15, 19, 24])
+y = pd.Series([10, 12, 15, 19, 24])
 
     # First Difference
-    y_diff = y.diff().dropna()
-    print("First Difference:", y_diff.values)
+y_diff = y.diff().dropna() print("First Difference:", y_diff.values)
 
 First-order differencing removes trends to make the data stationary and highlights short-term changes in the series. However, differencing reduces the length of the dataset, and excessive differencing may lead to a loss of long-term information. Analysts must balance improved stationarity against potential data loss.
 
@@ -190,18 +168,16 @@ Derivatives measure the rate of change in a time series, which can highlight mom
 
 **Python Example for Derivatives:**
 
-    import numpy as np
+import numpy as np
 
     # Example Time Series
-    y = np.array([10, 12, 15, 19, 24])
+y = np.array([10, 12, 15, 19, 24])
 
     # First Derivative (Rate of Change)
-    dy = np.gradient(y)
-    print("First Derivative (Rate of Change):", dy)
+dy = np.gradient(y) print("First Derivative (Rate of Change):", dy)
 
     # Second Derivative (Acceleration)
-    d2y = np.gradient(dy)
-    print("Second Derivative (Acceleration):", d2y)
+d2y = np.gradient(dy) print("Second Derivative (Acceleration):", d2y)
 
 ## Embedding Prior Values: Building \"Memory\"
 
@@ -210,16 +186,10 @@ Embedding previous observations as features allows models to \"remember\" past v
 **Python Example for Lagged Features:**
 
     # Simulated Time Series Data
-    np.random.seed(42)
-    data = pd.Series(np.cumsum(np.random.randn(200))) # Random walk time series
+np.random.seed(42) data = pd.Series(np.cumsum(np.random.randn(200))) # Random walk time series
 
     # Create Features: Lagged Values and Rate of Change
-    df = pd.DataFrame({
-        'value': data,
-        'lag_1': data.shift(1),
-        'lag_2': data.shift(2),
-        'rate_of_change': data.diff()
-    }).dropna()
+df = pd.DataFrame({ 'value': data, 'lag_1': data.shift(1), 'lag_2': data.shift(2), 'rate_of_change': data.diff() }).dropna()
 
 **Caution:** Adding too many lagged features can cause overfitting.
 
@@ -227,21 +197,17 @@ Embedding previous observations as features allows models to \"remember\" past v
 
 - **Rolling Statistics**: Calculate rolling means, variances, or medians over a window to smooth the series.
 
-          rolling_mean = y.rolling(window=3).mean()
+rolling_mean = y.rolling(window=3).mean()
 
 - **Extracting Seasonality**: Decompose a series into trend, seasonal, and residual components.
 
-          from statsmodels.tsa.seasonal import seasonal_decompose
-          result = seasonal_decompose(y, period=12)
-          result.seasonal.head()
+from statsmodels.tsa.seasonal import seasonal_decompose result = seasonal_decompose(y, period=12) result.seasonal.head()
 
 - **Fourier Transforms**: Identify dominant frequencies in seasonal data.
 
 - **Time-Based Features**: Extract calendar-related features like month, day of the week, or hour to capture seasonality.
 
-          df.index = pd.date_range(start="2023–01", periods=len(df), freq="M")
-          df_features = pd.DataFrame({"month": df.index.month, "year": df.index.year})
-          print(df_features.head())
+df.index = pd.date_range(start="2023–01", periods=len(df), freq="M") df_features = pd.DataFrame({"month": df.index.month, "year": df.index.year}) print(df_features.head())
 
 ## Next Steps
 
@@ -255,9 +221,7 @@ Feature engineering transforms raw time series data into meaningful representati
 
 **Python Example:**
 
-    df['weight_lag1'] = df['weight'].shift(1)
-    df['weight_derivative'] = df['weight'].diff()
-    df.head()
+df['weight_lag1'] = df['weight'].shift(1) df['weight_derivative'] = df['weight'].diff() df.head()
 
 Pandas makes these transformations straightforward for time series datasets, enabling effective feature engineering and enhancing model accuracy.
 
