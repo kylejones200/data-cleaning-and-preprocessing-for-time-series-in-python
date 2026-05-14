@@ -38,15 +38,13 @@ print("Original Data:\n", data) print("Lagged by 1 Period:\n", data_lag1) print(
 
 Windowing calculates statistics over a rolling window, such as moving averages or standard deviations. It smooths data and highlights trends.
 
-**Rolling Mean:**
-
+Rolling Mean:
     # Rolling Mean with Window Size of 3
 rolling_mean = data.rolling(window=3).mean() print("Rolling Mean (Window=3):\n", rolling_mean)
 
 The rolling mean is the most common windowing technique, but rolling windows can also be used with other aggregations.
 
-**Rolling Standard Deviation:**
-
+Rolling Standard Deviation:
     # Rolling Standard Deviation (Volatility)
 rolling_std = data.rolling(window=3).std() print("Rolling Standard Deviation (Window=3):\n", rolling_std)
 
@@ -56,16 +54,14 @@ Calculating rolling standard deviation is useful for analyzing volatility, espec
 
 Resampling changes the frequency of time series data, either by aggregating data (downsampling) or by interpolating data (upsampling).
 
-**Downsampling:**
-
+Downsampling:
     # Example Time Series Data (Hourly)
 date_rng = pd.date_range(start='2023-01-01', end='2023-01-02', freq='H') data_hourly = pd.Series(np.random.randn(len(date_rng)), index=date_rng)
 
     # Downsample to Daily Mean
 data_daily = data_hourly.resample('D').mean() print("Daily Mean (Downsampled):\n", data_daily)
 
-**Upsampling:**
-
+Upsampling:
     # Upsample to 30-Minute Frequency and Interpolate
 data_half_hourly = data_hourly.resample('30T').interpolate(method='linear') print("Upsampled and Interpolated (30 Min Frequency):\n", data_half_hourly)
 
@@ -73,8 +69,7 @@ data_half_hourly = data_hourly.resample('30T').interpolate(method='linear') prin
 
 Machine learning models are sensitive to missing values. Pandas provides several strategies for imputing missing values, such as forward fill, backward fill, and mean imputation.
 
-**Forward Fill (or Back Fill):**
-
+Forward Fill (or Back Fill):
     # Introducing NaN values
 data_with_nans = data.copy() data_with_nans.iloc[3] = np.nan data_with_nans.iloc[7] = np.nan
 
@@ -86,8 +81,7 @@ data_bfill = data_with_nans.bfill() print("Backward Filled Data:\n", data_bfill)
 
 Forward fill is particularly useful when working with sensor data where the most recent observation is carried forward until a new reading is available.
 
-**Mean Imputation:**
-
+Mean Imputation:
     # Mean Imputation
 data_mean_impute = data_with_nans.fillna(data_with_nans.mean()) print("Mean Imputation:\n", data_mean_impute)
 
@@ -107,11 +101,11 @@ Feature engineering is the process of creating additional input features from ra
 
 Time series forecasting is not just about feeding raw data into a model. Transforming the data to highlight important patterns or trends can:
 
-- **Improve Model Accuracy** by adding relevant features.
+- Improve Model Accuracy by adding relevant features.
 
-- **Reveal Hidden Patterns** like rates of change or lagged effects.
+- Reveal Hidden Patterns like rates of change or lagged effects.
 
-- **Help Models Learn Temporal Dependencies**, especially when using non-sequential models like regression.
+- Help Models Learn Temporal Dependencies, especially when using non-sequential models like regression.
 
 Good feature engineering ensures models are equipped to learn both short-term and long-term relationships in the data.
 
@@ -119,12 +113,11 @@ Good feature engineering ensures models are equipped to learn both short-term an
 
 Time series values often vary in magnitude, and unscaled data can hinder the performance of models, especially those that rely on gradient descent (e.g., neural networks). Scaling methods include:
 
-- **Min-Max Scaling**: Rescales values to a specific range, e.g., \[0, 1\].
+- Min-Max Scaling: Rescales values to a specific range, e.g., \[0, 1\].
 
-- **Standardization (Z-score)**: Rescales values to have a mean of 0 and standard deviation of 1.
+- Standardization (Z-score): Rescales values to have a mean of 0 and standard deviation of 1.
 
-**Python Example for Scaling:**
-
+Python Example for Scaling:
 from sklearn.preprocessing import MinMaxScaler, StandardScaler import numpy as np
 
     # Example Time Series
@@ -138,18 +131,16 @@ scaler_std = StandardScaler() y_std = scaler_std.fit_transform(y)
 
 print("Min-Max Scaled:", y_minmax.flatten()) print("Standardized:", y_std.flatten())
 
-**When to Use:**
+When to Use:
+- Use Min-Max Scaling for data where the range matters.
 
-- Use **Min-Max Scaling** for data where the range matters.
-
-- Use **Standardization** when the scale is unknown or when working with models sensitive to variance.
+- Use Standardization when the scale is unknown or when working with models sensitive to variance.
 
 ## Looking at Changes in Values
 
 Instead of analyzing absolute values, focusing on changes can remove trends and reveal stationarity. Differencing calculates the difference between consecutive values:
 
-**Python Example for Differencing:**
-
+Python Example for Differencing:
     # Example Time Series
 y = pd.Series([10, 12, 15, 19, 24])
 
@@ -162,12 +153,11 @@ First-order differencing removes trends to make the data stationary and highligh
 
 Derivatives measure the rate of change in a time series, which can highlight momentum or acceleration patterns.
 
-- **First Derivative**: Measures the rate of change.
+- First Derivative: Measures the rate of change.
 
-- **Second Derivative**: Measures the rate of change of the rate of change (acceleration).
+- Second Derivative: Measures the rate of change of the rate of change (acceleration).
 
-**Python Example for Derivatives:**
-
+Python Example for Derivatives:
 import numpy as np
 
     # Example Time Series
@@ -183,29 +173,28 @@ d2y = np.gradient(dy) print("Second Derivative (Acceleration):", d2y)
 
 Embedding previous observations as features allows models to \"remember\" past values. This is especially important for models that do not inherently capture temporal dependencies (e.g., regression).
 
-**Python Example for Lagged Features:**
-
+Python Example for Lagged Features:
     # Simulated Time Series Data
 np.random.seed(42) data = pd.Series(np.cumsum(np.random.randn(200))) # Random walk time series
 
     # Create Features: Lagged Values and Rate of Change
 df = pd.DataFrame({ 'value': data, 'lag_1': data.shift(1), 'lag_2': data.shift(2), 'rate_of_change': data.diff() }).dropna()
 
-**Caution:** Adding too many lagged features can cause overfitting.
+Caution: Adding too many lagged features can cause overfitting.
 
 ## Other Common Feature Engineering Techniques
 
-- **Rolling Statistics**: Calculate rolling means, variances, or medians over a window to smooth the series.
+- Rolling Statistics: Calculate rolling means, variances, or medians over a window to smooth the series.
 
 rolling_mean = y.rolling(window=3).mean()
 
-- **Extracting Seasonality**: Decompose a series into trend, seasonal, and residual components.
+- Extracting Seasonality: Decompose a series into trend, seasonal, and residual components.
 
 from statsmodels.tsa.seasonal import seasonal_decompose result = seasonal_decompose(y, period=12) result.seasonal.head()
 
-- **Fourier Transforms**: Identify dominant frequencies in seasonal data.
+- Fourier Transforms: Identify dominant frequencies in seasonal data.
 
-- **Time-Based Features**: Extract calendar-related features like month, day of the week, or hour to capture seasonality.
+- Time-Based Features: Extract calendar-related features like month, day of the week, or hour to capture seasonality.
 
 df.index = pd.date_range(start="2023–01", periods=len(df), freq="M") df_features = pd.DataFrame({"month": df.index.month, "year": df.index.year}) print(df_features.head())
 
@@ -213,14 +202,12 @@ df.index = pd.date_range(start="2023–01", periods=len(df), freq="M") df_featur
 
 Feature engineering transforms raw time series data into meaningful representations, enabling models to learn richer temporal patterns. Techniques like scaling, differencing, derivatives, and memory embedding improve predictive accuracy.
 
-**Example - Beehive Analysis**
+Example - Beehive Analysis
+- Lagged features: Yesterday's weight affects today's weight.
 
-- **Lagged features**: Yesterday's weight affects today's weight.
+- Rate of Change: First derivative of weight to detect honey production speed.
 
-- **Rate of Change**: First derivative of weight to detect honey production speed.
-
-**Python Example:**
-
+Python Example:
 df['weight_lag1'] = df['weight'].shift(1) df['weight_derivative'] = df['weight'].diff() df.head()
 
 Pandas makes these transformations straightforward for time series datasets, enabling effective feature engineering and enhancing model accuracy.
@@ -247,8 +234,7 @@ Unlike moving averages, exponential smoothing (ES) assigns exponentially decreas
 
 - A higher $\alpha$ places more emphasis on recent observations, while a lower $\alpha$ spreads the influence over a longer range of past data.
 
-**Impact of Different $\alpha$ Values**
-
+Impact of Different $\alpha$ Values
 - $\alpha = 0.3$ (Red Line): The weight for recent data decays quickly, giving the most importance to the latest observation.
 
 - $\alpha = 0.2$ (Orange Line): Weights decay more gradually, spreading influence over a broader history.
@@ -269,25 +255,23 @@ In general, moving averages work well when trends are minimal, and you want a si
 
 One of the most critical drawbacks of moving averages is lag---the delay introduced in detecting changes in the underlying time series. The larger the window size $N$, the greater the lag.
 
-**Understanding Lag in Moving Averages** Since a moving average smooths a time series by averaging over the last $N$ observations, it effectively delays the recognition of changes in the data. When a trend shifts upward or downward, the moving average will only gradually adjust to the new trend because it incorporates past values that no longer represent the current direction of the series.
+Understanding Lag in Moving Averages Since a moving average smooths a time series by averaging over the last $N$ observations, it effectively delays the recognition of changes in the data. When a trend shifts upward or downward, the moving average will only gradually adjust to the new trend because it incorporates past values that no longer represent the current direction of the series.
 
-**Small N (e.g., N=3)**
-
+Small N (e.g., N=3)
 - The moving average reacts more quickly to changes.
 
 - The curve remains close to the actual data points.
 
 - There is less lag, but also more sensitivity to noise.
 
-**Large N (e.g., N=10)**
-
+Large N (e.g., N=10)
 - The moving average smooths the series more aggressively.
 
 - It takes longer to detect an upward or downward shift.
 
 - The lag is more pronounced, delaying trend recognition.
 
-**Why Lag Matters** For decision-making, lag can be problematic, especially in applications where quick responses are crucial:
+Why Lag Matters For decision-making, lag can be problematic, especially in applications where quick responses are crucial:
 
 - In financial trading, a large $N$ might cause traders to miss early signs of a price reversal.
 
@@ -309,11 +293,11 @@ This demonstrates a fundamental trade-off:
 
 - Higher lag (large $N$) = smoother but slower adaptation to new trends.
 
-**Comparing with Exponential Smoothing** Exponential smoothing also introduces lag, but because recent observations receive more weight, it reacts faster than a moving average of equivalent smoothing power. By adjusting $\alpha$, analysts can control the trade-off between responsiveness and lag, much like changing $N$ in a moving average.
+Comparing with Exponential Smoothing Exponential smoothing also introduces lag, but because recent observations receive more weight, it reacts faster than a moving average of equivalent smoothing power. By adjusting $\alpha$, analysts can control the trade-off between responsiveness and lag, much like changing $N$ in a moving average.
 
 ![image](img/smoothing_chart.png)
 
-**Choosing N Wisely** When selecting $N$ for a moving average, the decision depends on the desired balance between smoothness and responsiveness:
+Choosing N Wisely When selecting $N$ for a moving average, the decision depends on the desired balance between smoothness and responsiveness:
 
 - For short-term trend detection → Use a smaller $N$ (e.g., 3--5).
 
@@ -325,7 +309,7 @@ Both moving averages and exponential smoothing are useful techniques for time se
 
 ## Key Takeaways
 
-- **Improve Model Accuracy** by adding relevant features.
-- **Reveal Hidden Patterns** like rates of change or lagged effects.
-- **Help Models Learn Temporal Dependencies**, especially when using non-sequential models like regression.
-- **Min-Max Scaling**: Rescales values to a specific range, e.g., \[0, 1\].
+- Improve Model Accuracy by adding relevant features.
+- Reveal Hidden Patterns like rates of change or lagged effects.
+- Help Models Learn Temporal Dependencies, especially when using non-sequential models like regression.
+- Min-Max Scaling: Rescales values to a specific range, e.g., \[0, 1\].
